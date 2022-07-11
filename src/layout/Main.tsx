@@ -1,37 +1,18 @@
-import { createUseStyles } from 'react-jss';
 import { useWindowWidth } from '../useWindowWidth';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-import HelpType from '../features/shelterSelect/ShelterSelect';
-import Information from '../features/information/Information';
-import Check from '../features/check/Check';
-
-
-const useStyles = createUseStyles({
-    header: {
-        // position: 'absolute',
-        // top: 0,
-        // left: 0,
-        // width: '100%',
-        // minHeight: '2rem',
-        // textAlign: 'center',
-        // backgroundColor: 'gray',
-        // color: 'black'
-    }
-});
+import Information from '../features/information/InformationPage';
+import Check from '../features/check/CheckPage';
+import Shelter from '../features/shelter/ShelterPage';
 
 function Main() {
-    const styles = useStyles();
     const windowWidth = useWindowWidth();
 
     return (
         <header className='main'>
             <div className={'container'} style={{
                 padding: `0.4rem ${windowWidth < 576 ? '2rem' : '5rem'}`,
-                // marginTop: '38px',
-                // marginBottom: '195px',
                 minHeight: '40rem',
                 paddingTop: '2rem',
-                // overflow: 'auto',
                 paddingLeft: '7rem',
                 paddingRight: '7rem'
             }}>
@@ -46,7 +27,7 @@ function Main() {
                                 </ol>
                             </nav>
                             <Routes>
-                                <Route path="/" element={<HelpType />} />
+                                <Route path="/" element={<Shelter />} />
                                 <Route path="/information" element={<Information />} />
                                 <Route path="/check" element={<Check />} />
                             </Routes>
