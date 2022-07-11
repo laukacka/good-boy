@@ -1,36 +1,10 @@
-import { createUseStyles } from 'react-jss';
 import { useWindowWidth } from '../useWindowWidth'
 
-const useStyles = createUseStyles({
-    footer: {
-        // width: '100%',
-        // height: '13rem',
-        // backgroundColor: 'red',
-        // borderTop: '1px black solid'
-        // position: 'absolute',
-        // bottom: 0
-    }
-});
-
 function Footer() {
-    const styles = useStyles();
     const windowWidth = useWindowWidth();
-    // const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-    // useEffect(() => {
-    //     function handleWindowResize() {
-    //         setWindowWidth(window.innerWidth);
-    //     }
-
-    //     window.addEventListener('resize', handleWindowResize);
-
-    //     return () => {
-    //         window.removeEventListener('resize', handleWindowResize);
-    //     };
-    // }, []);
 
     return (
-        <footer className={'bottom ' + styles.footer}>
+        <footer className={'bottom'}>
             <div className="container" style={{ borderTop: '1px #d9d9d9 solid' }}>
                 <div className="row" style={{ paddingTop: '3.5rem', paddingBottom: '2.5rem' }}>
                     <div className="col-md-6 col-sm-6 col-lg-3">
