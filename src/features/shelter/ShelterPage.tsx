@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setShelterInfo } from './state/shelterSlice';
 import { useNavigate } from 'react-router-dom';
 
-function HelpType() {
+function ShelterPage() {
     const [wholeFoundation, setWholeFoundation] = useState(false);
-    const sums = [5, 10, 20, 30, 50, 100];
-    const [priceToHelp, setPriceToHelp] = useState<number | undefined>();
-    const [shelter, setShelter] = useState<string | undefined>();
-    const shelters = useSelector((state: any) => state.shelters); //TODO
+    const sums = ['5', '10', '20', '30', '50', '100'];
+    const [priceToHelp, setPriceToHelp] = useState<string | undefined>();
+    const [shelter, setShelter] = useState<number | undefined>();
+    const shelters = useSelector((state: any) => state.shelters.shelters);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ function HelpType() {
 
     const onContinue = () => {
         if (!priceToHelp) {
-            console.log('price not set');
+            console.log('price not set'); //FIXME
             return;
         }
 
@@ -68,12 +68,12 @@ function HelpType() {
                         <label htmlFor="selectShelter" className="form-label fw-bold">O projekte</label>
                         <div className="mb-3 form-floating">
                             <select disabled={wholeFoundation} id='selectShelter'
-                                onChange={(e) => setShelter(e.target.value)}
+                                onChange={(e) => setShelter(Number(e.target.value))}
                                 required={!wholeFoundation}
                                 className="form-select form-control"
                             >
                                 <option ></option>
-                                {Array.from(shelters.shelters).map((shelter: any) => {
+                                {Array.from(shelters).map((shelter: any) => {
                                     return <option key={shelter.id} value={shelter.id}>{shelter.name}</option>
                                 })}
                             </select>
@@ -116,4 +116,4 @@ function HelpType() {
     );
 }
 
-export default HelpType;
+export default ShelterPage;
