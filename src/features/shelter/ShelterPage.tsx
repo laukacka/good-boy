@@ -148,6 +148,7 @@ function ShelterPage() {
                                     onChange={handlePersonalSumToHelp}
                                     placeholder='______'
                                     className="btn"
+                                    value={(!sums.find(sum => sum === sumToHelp) && sumToHelp) ? sumToHelp : ''}
                                     style={{
                                         width: '60px',
                                         maxHeight: '38px',
