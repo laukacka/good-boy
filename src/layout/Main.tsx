@@ -8,7 +8,7 @@ function Main() {
     const windowWidth = useWindowWidth();
 
     return (
-        <header className='main'>
+        <header className='main' style={{ paddingTop: '2rem' }}>
             <div className='container' style={{
                 padding: `0.4rem ${windowWidth < 576 ? '2rem' : '5rem'}`,
                 minHeight: '40rem',
