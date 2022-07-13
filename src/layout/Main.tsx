@@ -9,15 +9,14 @@ function Main() {
 
     return (
         <header className='main'>
-            <div className={'container'} style={{
+            <div className='container' style={{
                 padding: `0.4rem ${windowWidth < 576 ? '2rem' : '5rem'}`,
                 minHeight: '40rem',
-                paddingTop: '2rem',
                 paddingLeft: '7rem',
                 paddingRight: '7rem'
             }}>
                 <div className="row">
-                    <div className="col-9">
+                    <div className="col-12 col-md-9 col-lg-8 col-xl-8">
                         <BrowserRouter>
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb">
@@ -34,7 +33,7 @@ function Main() {
                         </BrowserRouter>
 
                     </div>
-                    <div className="col-3 text-end" >
+                    <div className="col-12 col-md-3 col-lg-4 col-xl-4 text-end" >
                         <img alt='' src='../../dog.png' style={{ height: '35rem' }} />
                     </div>
                 </div>
