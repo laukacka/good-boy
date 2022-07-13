@@ -2,17 +2,18 @@ import { BaseSyntheticEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setShelterInfo } from './state/shelterSlice';
 import { useNavigate } from 'react-router-dom';
+import { Toast } from 'bootstrap';
 
 function ShelterPage() {
-    const [wholeFoundation, setWholeFoundation] = useState(false);
+
     const sums = ['5', '10', '20', '30', '50', '100'];
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const shelters = useSelector((state: any) => state.shelters);
     const [sumToHelp, setSumToHelp] = useState<string | undefined>(shelters.value);
+    const [wholeFoundation, setWholeFoundation] = useState(shelters.selectedShelter ? false : true);
     const [shelter, setShelter] = useState<number | undefined>(shelters.selectedShelter);
-
 
     const handlePersonalSumToHelp = (e: BaseSyntheticEvent) => {
         setSumToHelp(e.target.value);
@@ -37,7 +38,9 @@ function ShelterPage() {
         }
 
         if (!sumToHelp) {
-            console.log('price not set'); //FIXME
+            const toastEl = document.getElementById('errorToast');
+            const bsToast = new Toast(toastEl);
+            bsToast.show();
             return;
         }
 
@@ -123,7 +126,7 @@ function ShelterPage() {
                                             className="btn"
                                             htmlFor={'sum' + sum}
                                         >
-                                            {sum}
+                                            {sum + ' €'}
                                         </label>
                                     </>
                                 })
@@ -131,6 +134,7 @@ function ShelterPage() {
                             <button
                                 type='button'
                                 className="btn"
+                                name="options"
                                 style={{
                                     marginLeft: '0.5rem',
                                     paddingLeft: '0.7rem',
@@ -167,11 +171,11 @@ function ShelterPage() {
                 <div id="errorToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
                     <div className="toast-header">
                         <img src="..." className="rounded me-2" alt="" />
-                        <strong className="me-auto"></strong>
+                        <strong className="me-auto">Chýbajúca suma</strong>
                         <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div className="toast-body">
-                        Prosím vás vyberte výšku príspevku.
+                        Prosím vás vyberte sumu, ktorou chcete prispieť.
                     </div>
                 </div>
             </div>
