@@ -66,7 +66,7 @@ function InformationPage() {
         <>
             <h2 className={styles.header}>Potrebujeme od Vás zopár informácií</h2>
             <div className='container'>
-                <form id='informationForm' onSubmit={(e) => e.preventDefault()} className='row needs-validation' noValidate>
+                <form id='informationForm' className='row needs-validation' noValidate>
                     <div className='col'>
                         <label className="form-label fw-bold">O vás</label>
                         <div className="mb-3">
@@ -121,8 +121,9 @@ function InformationPage() {
                             <PhoneInput
                                 country={'sk'}
                                 onlyCountries={['sk', 'cz']}
-                                value={'sk'}
-                                onChange={phone => setInformation({ ...localInformation, phone })}
+                                value={localInformation.phone}
+
+                                onChange={phone => setLocalInformation({ ...localInformation, phone })}
                             />
                         </div>
 
@@ -131,7 +132,7 @@ function InformationPage() {
                         <div className='col text-end' style={{ marginTop: '3rem' }}>
                             <div className="hstack gap-3">
                                 <button onClick={() => navigate('/')} type="button" className="btn" style={{ backgroundColor: '#ffddcc', color: 'black' }}>Späť</button>
-                                <button type="submit" onClick={() => handleSubmit()} className="btn ms-auto" style={{ backgroundColor: '#8c8c8c', color: 'white' }}>Pokračovať</button>
+                                <button type="submit" onClick={(e) => handleSubmit()} className="btn ms-auto" style={{ backgroundColor: '#8c8c8c', color: 'white' }}>Pokračovať</button>
                             </div>
                         </div>
                     </div>

@@ -5,6 +5,7 @@ import { Information } from '../information/models/Information';
 import { ShelterState } from '../shelter/state/shelterSlice';
 import { sendInformation } from '../check/checkService';
 import { InformationToSend } from './models/InformationToSend';
+import { Toast } from 'bootstrap';
 
 const useStyles = createUseStyles({
     h6: {
@@ -17,7 +18,6 @@ function CheckPage() {
     const { h6 } = useStyles();
     const navigate = useNavigate();
     const information: Information = useSelector((state: any) => state.information.information);
-    console.log(information);
     const shelterInfo: ShelterState = useSelector((state: any) => state.shelters);
     const shelter = shelterInfo.shelters.find(shelter => shelter.id === shelterInfo.selectedShelter);
 
@@ -32,7 +32,7 @@ function CheckPage() {
         </>
     ) : undefined;
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
         const form = document.getElementById('checkForm');
         if (form) {
             form.addEventListener('submit', event => {
@@ -53,8 +53,23 @@ function CheckPage() {
             value: shelterInfo.value,
             shelterID: shelterInfo.selectedShelter ?? undefined
         }
+        console.log(informationToSend)
 
-        sendInformation(informationToSend); //FIXME not working
+        if ((document.getElementById('confirmation') as any).checked) {
+            sendInformation(informationToSend).then(response => {
+                let toastEl: HTMLElement | null;
+
+                if (response.status === 200) {
+                    toastEl = document.getElementById('successToast');
+                } else {
+                    toastEl = document.getElementById('errorToast');
+                }
+
+                const bsToast = new Toast(toastEl);
+                bsToast.show();
+            });
+        }
+        e.preventDefault();
     }
 
     return (
@@ -73,11 +88,11 @@ function CheckPage() {
                 <span>{information.email}</span>
                 {
                     information.phone ? <>
-                        <h6>Telefónne číslo</h6>
+                        <h6 className={h6}>Telefónne číslo</h6>
                         <span>{information.phone}</span>
                     </> : undefined
                 }
-                <form id='checkForm' onSubmit={(e) => e.preventDefault()} className="row g-3 needs-validation" noValidate style={{ marginTop: '0.5rem' }}>
+                <form id='checkForm' className="row g-3 needs-validation" noValidate style={{ marginTop: '0.5rem' }}>
                     <div className="col-12">
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" value="" id="confirmation" required />
@@ -93,11 +108,35 @@ function CheckPage() {
                         <div className='col text-end' style={{ marginTop: '3rem' }}>
                             <div className="hstack gap-3">
                                 <button onClick={() => navigate('/information')} type="button" className="btn" style={{ backgroundColor: '#ffddcc', color: 'black' }}>Späť</button>
-                                <button type="submit" onClick={() => handleSubmit()} className="btn ms-auto" style={{ backgroundColor: '#8c8c8c', color: 'white' }}>Pokračovať</button>
+                                <button type="submit" onClick={(e) => handleSubmit(e)} className="btn ms-auto" style={{ backgroundColor: '#8c8c8c', color: 'white' }}>Odoslať formulár</button>
                             </div>
                         </div>
                     </div>
                 </form>
+            </div>
+            <div className="toast-container position-fixed top-0 end-0 p-3">
+                <div id="errorToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div className="toast-header">
+                        <img src="..." className="rounded me-2" alt="" />
+                        <strong className="me-auto">Odoslanie zlyhalo</strong>
+                        <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div className="toast-body">
+                        Váš príspevok sa nepodarilo odoslať. Skúste to neskôr prosím.
+                    </div>
+                </div>
+            </div>
+            <div className="toast-container position-fixed top-0 end-0 p-3">
+                <div id="successToast" className="toast" role="status" aria-live="polite" aria-atomic="true">
+                    <div className="toast-header">
+                        <img src="..." className="rounded me-2" alt="" />
+                        <strong className="me-auto">Odoslanie úspešné</strong>
+                        <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div className="toast-body">
+                        Váš príspevok bol úspešne odoslaný.
+                    </div>
+                </div>
             </div>
         </>
     );

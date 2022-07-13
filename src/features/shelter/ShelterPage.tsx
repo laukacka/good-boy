@@ -6,30 +6,42 @@ import { useNavigate } from 'react-router-dom';
 function ShelterPage() {
     const [wholeFoundation, setWholeFoundation] = useState(false);
     const sums = ['5', '10', '20', '30', '50', '100'];
-    const [priceToHelp, setPriceToHelp] = useState<string | undefined>();
-    const [shelter, setShelter] = useState<number | undefined>();
-    const shelters = useSelector((state: any) => state.shelters.shelters);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const shelters = useSelector((state: any) => state.shelters);
+    const [sumToHelp, setSumToHelp] = useState<string | undefined>(shelters.value);
+    const [shelter, setShelter] = useState<number | undefined>(shelters.selectedShelter);
+
+
     const handlePersonalSumToHelp = (e: BaseSyntheticEvent) => {
-        setPriceToHelp(e.target.value);
+        setSumToHelp(e.target.value);
     }
 
     const handleSelectWholeFoundation = () => {
         setWholeFoundation(true);
-        const selectShelter = document.getElementById('selectShelter');
-
-        if (selectShelter) (selectShelter as any).value = undefined;
+        setShelter(undefined);
     }
 
-    const onContinue = () => {
-        if (!priceToHelp) {
+    const handleSubmit = () => {
+        const form = document.getElementById('shelterForm');
+        if (form) {
+            form.addEventListener('submit', event => {
+                if (!(form as any).checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+                form.classList.add('was-validated')
+            }, false)
+        }
+
+        if (!sumToHelp) {
             console.log('price not set'); //FIXME
             return;
         }
 
-        dispatch(setShelterInfo({ selectedShelter: wholeFoundation === true ? undefined : shelter, value: priceToHelp }));
+        dispatch(setShelterInfo({ selectedShelter: wholeFoundation === true ? undefined : shelter, value: sumToHelp }));
         navigate('/information');
     }
 
@@ -63,43 +75,82 @@ function ShelterPage() {
                         </div>
                     </div>
                 </div>
-                <form onSubmit={(e) => e.preventDefault()} className='row form-floating need-validation'>
+                <form id='shelterForm' className='row form-floating needs-validation' noValidate>
                     <div className='col'>
                         <label htmlFor="selectShelter" className="form-label fw-bold">O projekte</label>
                         <div className="mb-3 form-floating">
                             <select disabled={wholeFoundation} id='selectShelter'
                                 onChange={(e) => setShelter(Number(e.target.value))}
                                 required={!wholeFoundation}
+                                value={shelter}
                                 className="form-select form-control"
                             >
                                 <option ></option>
-                                {Array.from(shelters).map((shelter: any) => {
+                                {Array.from(shelters.shelters).map((shelter: any) => {
                                     return <option key={shelter.id} value={shelter.id}>{shelter.name}</option>
                                 })}
                             </select>
                             <label htmlFor="selectShelter" className="form-label">Útulok</label>
+                            <div className="invalid-feedback">
+                                Prosím vyplňte toto pole.
+                            </div>
                         </div>
                         <label htmlFor="selectShelter" className="form-label fw-bold">Suma, ktorou chcete prispieť</label>
                         <div >
                             {
                                 sums.map(sum => {
-                                    return <button
-                                        key={sum}
-                                        onClick={() => setPriceToHelp(sum)}
-                                        type="button"
-                                        className="btn"
-                                        style={{ marginLeft: '0.5rem', paddingLeft: '0.7rem', border: '1px #a6a6a6 solid' }}>
-                                        {sum} €
-                                    </button>
+                                    return <>
+                                        <input
+                                            key={sum}
+                                            type="radio"
+                                            className="btn-check"
+                                            name="options"
+                                            id={'sum' + sum}
+                                            autoComplete="off"
+                                            required
+                                            value={sum}
+                                            onClick={() => setSumToHelp(sum)}
+                                            defaultChecked={sumToHelp === sum}
+                                        />
+                                        <label
+                                            style={{
+                                                backgroundColor: sumToHelp === sum ? '#cc7a00' : 'white',
+                                                color: sumToHelp === sum ? 'white' : 'black',
+                                                marginLeft: '0.5rem',
+                                                paddingLeft: '0.7rem',
+                                                border: '1px #a6a6a6 solid'
+                                            }}
+                                            className="btn"
+                                            htmlFor={'sum' + sum}
+                                        >
+                                            {sum}
+                                        </label>
+                                    </>
                                 })
                             }
-                            <button type="button" className="btn" style={{
-                                marginLeft: '0.5rem',
-                                paddingLeft: '0.7rem',
-                                border: '1px #a6a6a6 solid', maxHeight: '38px'
-                            }}
+                            <button
+                                type='button'
+                                className="btn"
+                                style={{
+                                    marginLeft: '0.5rem',
+                                    paddingLeft: '0.7rem',
+                                    border: '1px #a6a6a6 solid',
+                                    maxHeight: '38px',
+                                    backgroundColor: (!sums.find(sum => sum === sumToHelp) && sumToHelp) ? '#cc7a00' : 'white',
+                                    color: (!sums.find(sum => sum === sumToHelp) && sumToHelp) ? 'white' : 'black'
+                                }}
                             >
-                                <input onChange={handlePersonalSumToHelp} placeholder='______' className="btn" style={{ width: '60px', maxHeight: '38px', padding: 0 }} />
+                                <input
+                                    onChange={handlePersonalSumToHelp}
+                                    placeholder='______'
+                                    className="btn"
+                                    style={{
+                                        width: '60px',
+                                        maxHeight: '38px',
+                                        padding: 0,
+                                        color: !sums.find(sum => sum === sumToHelp) ? 'white' : 'black',
+                                    }}
+                                />
                                 €
                             </button>
 
@@ -107,10 +158,22 @@ function ShelterPage() {
                     </div>
                     <div className='row'>
                         <div className='col text-end' style={{ marginTop: '3rem' }}>
-                            <button onClick={() => onContinue()} type="submit" className="btn" style={{ backgroundColor: '#cc7a00', color: 'white' }}>Pokračovať</button>
+                            <button onClick={() => handleSubmit()} type="submit" className="btn" style={{ backgroundColor: '#cc7a00', color: 'white' }}>Pokračovať</button>
                         </div>
                     </div>
                 </form>
+            </div>
+            <div className="toast-container position-fixed top-0 end-0 p-3">
+                <div id="errorToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div className="toast-header">
+                        <img src="..." className="rounded me-2" alt="" />
+                        <strong className="me-auto"></strong>
+                        <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div className="toast-body">
+                        Prosím vás vyberte výšku príspevku.
+                    </div>
+                </div>
             </div>
         </>
     );
