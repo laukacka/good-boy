@@ -4,13 +4,13 @@ import { Shelter } from '../models/Shelter';
 export interface ShelterState {
   shelters: Shelter[],
   selectedShelter: number | undefined,
-  value: string
+  value: number
 }
 
 const initialState: ShelterState = {
   shelters: [],
   selectedShelter: undefined,
-  value: '0'
+  value: 0
 }
 
 export const sheltersSlice = createSlice({

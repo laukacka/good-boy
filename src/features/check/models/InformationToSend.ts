@@ -3,6 +3,6 @@ export interface InformationToSend {
     lastName: string;
     email: string;
     phone?: string;
-    value: string;
+    value: number;
     shelterID?: number;
 }
